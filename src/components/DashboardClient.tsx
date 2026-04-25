@@ -303,23 +303,33 @@ export default function DashboardClient({ initialStreamers, initialHistory }: { 
               ) : null}
 
               {filteredHistory.map((record: any) => {
-                // 終了時刻の計算（ended_at がない場合のフォールバック）
+                const isLive = !record.ended_at;
                 let endTimeDisplay = '-';
-                if (record.ended_at) {
+                if (!isLive) {
                   endTimeDisplay = formatTime(record.ended_at);
-                } else if (record.started_at && record.duration_seconds) {
+                } else {
+                  endTimeDisplay = (
+                    <div className="live-now-badge">
+                      <span className="live-dot-small"></span>
+                      LIVE NOW
+                    </div>
+                  );
+                }
+                
+                if (!record.ended_at && record.started_at && record.duration_seconds) {
                   const end = new Date(new Date(record.started_at).getTime() + record.duration_seconds * 1000);
-                  endTimeDisplay = end.toLocaleString('ja-JP', {
-                    month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                  });
+                  // もし計算上の終了時刻がある場合は、それを補助的に出すことも可能ですが、
+                  // LIVE NOWを優先します。
                 }
 
                 return (
-                  <tr key={record.id}>
+                  <tr key={record.id} className={isLive ? 'history-row-live' : ''}>
                     <td style={{ fontWeight: 600 }}>{record.streamers?.name || 'Unknown'}</td>
                     <td>{formatTime(record.started_at)}</td>
                     <td>{endTimeDisplay}</td>
-                    <td style={{ color: 'var(--text-secondary)' }}>{formatDuration(record.duration_seconds)}</td>
+                    <td style={{ color: isLive ? 'rgba(255,255,255,0.9)' : 'var(--text-secondary)' }}>
+                      {isLive ? '配信中...' : formatDuration(record.duration_seconds)}
+                    </td>
                     <td>
                       {record.archive_url ? (
                         <CopyButton textToCopy={record.archive_url} />

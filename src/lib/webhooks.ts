@@ -219,15 +219,18 @@ export async function checkYouTubeLiveStatus(channelId: string): Promise<boolean
     if (!res.ok) return false;
     const html = await res.text();
     
-    // 1. まず "isLive":true が含まれているか（大前提）
-    // 2. 待機所（Upcoming）ではないことを確認するため "LIVE" というスタイルが指定されているかチェック
-    // 3. かつ、JSONデータ内の特定のフラグを確認
-    const hasLiveFlag = html.includes('"isLive":true');
-    const isActuallyLive = html.includes('"style":"LIVE"') || html.includes('\"status\":\"LIVE\"');
-    const isUpcoming = html.includes('"style":"UPCOMING"') || html.includes('\"status\":\"UPCOMING\"');
+    // YouTubeの内部JSONデータ（ytInitialPlayerResponse）内のライブ情報をより厳密に探す
+    const hasLiveNow = html.includes('"isLiveNow":true');
+    const hasIsLive = html.includes('"isLive":true');
+    
+    // 配信中のバッジやステータス表示を確認
+    const hasLiveBadge = html.includes('"label":"LIVE"') || html.includes('"label":"ライブ"');
+    const isUpcoming = html.includes('"upcomingEventData"') || html.includes('"style":"UPCOMING"');
 
-    // 「ライブ中フラグがあり」かつ「待機所ではない」場合のみライブと判定
-    return (hasLiveFlag && isActuallyLive) && !isUpcoming;
+    // 判定ロジックの強化: 
+    // "isLiveNow":true があればほぼ確実。
+    // それがない場合でも、isLiveバッジがあり、かつ待機所（Upcoming）でないならライブとみなす。
+    return (hasLiveNow || (hasIsLive && hasLiveBadge)) && !isUpcoming;
   } catch (e) {
     console.error('[YouTube Status Check Error]', e);
     return false;

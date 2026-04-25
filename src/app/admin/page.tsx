@@ -101,6 +101,7 @@ export default function AdminPage() {
       const result = await res.json();
       if (res.ok) {
         setMsg(`✅ ${result.message}`);
+        fetchStreamers(); // データを再取得して表示を更新
       } else {
         setMsg('❌ ' + result.error);
       }
@@ -163,9 +164,18 @@ export default function AdminPage() {
 
   return (
     <main className="container" style={{ maxWidth: '1000px' }}>
-      <header className="header" style={{ marginBottom: "25px" }}>
+      <header className="header" style={{ marginBottom: "20px" }}>
         <h1>配信者管理</h1>
       </header>
+
+      {/* 海外掲示板風 アラートバナー */}
+      {streamers.some(s => s.last_sync_status === 'error') && (
+        <div className="alert-banner-top">
+          <span className="error-dot" style={{ width: '8px', height: '8px' }}></span>
+          <span style={{ fontWeight: 'bold' }}>SYSTEM ALERT:</span>
+          <span>{streamers.filter(s => s.last_sync_status === 'error').length} 名の配信者で同期エラーが発生しています。詳細を確認し、必要に応じて再試行してください。</span>
+        </div>
+      )}
 
       {/* Top Section: Split Layout */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '30px', marginBottom: '30px' }}>

@@ -279,10 +279,49 @@ h1, h2, h3 {
   animation: pulse-error 1.5s infinite;
 }
 
-@keyframes pulse-error {
-  0% { transform: scale(0.9); opacity: 0.6; }
-  50% { transform: scale(1.1); opacity: 1; }
-  100% { transform: scale(0.9); opacity: 0.6; }
+.alert-banner-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #AF4425;
+  color: #EBDCB2;
+  padding: 8px 16px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  font-size: 0.75rem;
+  box-shadow: 0 4px 15px rgba(175, 68, 37, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: slide-down 0.4s ease-out;
+}
+
+.history-row-live {
+  background-color: rgba(175, 68, 37, 0.8) !important;
+  color: #EBDCB2 !important;
+}
+
+.history-row-live td {
+  color: #EBDCB2 !important;
+}
+
+.live-now-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.live-dot-small {
+  width: 6px;
+  height: 6px;
+  background-color: #ff4b4b;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #ff4b4b;
+  animation: pulse-live 1s infinite;
 }
 
 @keyframes pulse-dot {
