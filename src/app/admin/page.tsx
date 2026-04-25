@@ -125,7 +125,7 @@ export default function AdminPage() {
   return (
     <main className="container" style={{ maxWidth: '850px' }}>
       <header className="header" style={{ marginBottom: "25px" }}>
-        <h1>👑 配信者管理</h1>
+        <h1>配信者管理</h1>
       </header>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '25px' }}>
@@ -173,7 +173,7 @@ export default function AdminPage() {
         <section className="glass-panel" style={{ padding: '15px 25px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <h2 style={{ fontSize: '1rem', marginBottom: '5px' }}>📦 CSVツール</h2>
+              <h2 style={{ fontSize: '1rem', marginBottom: '5px' }}>CSVツール</h2>
               <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>名前,所属箱,platform(youtube/twitch),ID(@名可)</p>
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
@@ -189,13 +189,13 @@ export default function AdminPage() {
                   link.setAttribute("download", "streamers_backup.csv");
                   link.click();
                 }}
-                style={{ ...btnStyle, background: 'rgba(255,255,255,0.05)', padding: '8px 15px', fontSize: '0.8rem' }}
+                style={{ ...btnStyle, background: 'rgba(61, 34, 27, 0.08)', color: 'var(--text-primary)', border: '1px solid rgba(61, 34, 27, 0.2)', padding: '8px 15px', fontSize: '0.8rem' }}
               >
-                📥 CSVを書き出す
+                CSVを書き出す
               </button>
               
-              <label style={{ ...btnStyle, background: 'rgba(255,255,255,0.1)', padding: '8px 15px', fontSize: '0.8rem', cursor: 'pointer' }}>
-                📤 CSVを読み込む
+              <label style={{ ...btnStyle, background: 'rgba(61, 34, 27, 0.12)', color: 'var(--text-primary)', border: '1px solid rgba(61, 34, 27, 0.2)', padding: '8px 15px', fontSize: '0.8rem', cursor: 'pointer' }}>
+                CSVを読み込む
                 <input 
                   type="file" 
                   accept=".csv" 
@@ -233,15 +233,15 @@ export default function AdminPage() {
         <section className="glass-panel" style={{ padding: '15px 25px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <h2 style={{ fontSize: '1rem', marginBottom: '5px' }}>📡 Webhook管理</h2>
+              <h2 style={{ fontSize: '1rem', marginBottom: '5px' }}>Webhook管理</h2>
               <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>全配信者のWebhook購読を一括で再登録します（本番環境のみ）</p>
             </div>
             <button
               onClick={refreshWebhooks}
               disabled={loading}
-              style={{ ...btnStyle, background: 'rgba(123,97,255,0.2)', border: '1px solid var(--accent-color)', padding: '8px 15px', fontSize: '0.8rem' }}
+              style={{ ...btnStyle, background: 'var(--accent-color)', color: '#EBDCB2', padding: '8px 15px', fontSize: '0.8rem', boxShadow: '0 4px 10px rgba(102, 46, 28, 0.2)' }}
             >
-              🔄 Webhookを一括更新
+              Webhookを一括更新
             </button>
           </div>
         </section>
@@ -250,20 +250,20 @@ export default function AdminPage() {
         <section className="glass-panel">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-              <h2 style={{ fontSize: '1.2rem' }}>📋 登録済み</h2>
+              <h2 style={{ fontSize: '1rem', color: 'var(--text-primary)' }}>登録済み一覧</h2>
               {selectedIds.length > 0 && (
-                <button onClick={deleteSelected} style={{ background: '#ff4b4b', color: 'white', border: 'none', padding: '5px 12px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 'bold', cursor: 'pointer' }}>
-                  🗑️ {selectedIds.length}件を一括削除
+                <button onClick={deleteSelected} style={{ background: '#ff4b4b', color: 'white', border: 'none', padding: '4px 10px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 2px 8px rgba(255, 75, 75, 0.2)' }}>
+                  選択項目を削除 ({selectedIds.length})
                 </button>
               )}
             </div>
-            <div style={{ display: 'flex', gap: '5px', background: 'rgba(0,0,0,0.3)', padding: '4px', borderRadius: '8px' }}>
+            <div style={{ display: 'flex', gap: '5px', background: 'rgba(0,0,0,0.05)', padding: '4px', borderRadius: '8px' }}>
                <TabBtn active={viewMode === 'date'} onClick={() => setViewMode('date')}>登録順</TabBtn>
                <TabBtn active={viewMode === 'agency'} onClick={() => setViewMode('agency')}>箱ごと</TabBtn>
             </div>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {viewMode === 'agency' ? (
               Object.entries(streamers.reduce((acc: any, s: any) => {
                 const a = s.agency || '個人勢';
@@ -273,7 +273,7 @@ export default function AdminPage() {
               }, {} as any)).map(([agency, list]: any) => (
                 <div key={agency}>
                   <h3 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '8px', paddingLeft: '5px' }}>{agency}</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '15px' }}>{renderList(list)}</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', marginBottom: '10px' }}>{renderList(list)}</div>
                 </div>
               ))
             ) : renderList(streamers)}
@@ -292,7 +292,7 @@ function StreamerRowItem({ s, agencies, isSelected, onSelect, onUpdate }: any) {
   const isChanged = pendingAgency !== s.agency;
 
   return (
-    <div className="streamer-card" style={{ padding: '8px 12px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <div className="streamer-card" style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
         <input 
           type="checkbox" 
@@ -317,11 +317,11 @@ function StreamerRowItem({ s, agencies, isSelected, onSelect, onUpdate }: any) {
               setPendingAgency(e.target.value);
             }
           }}
-          style={{ background: '#1a1b35', color: isChanged ? 'var(--accent-hover)' : '#ccc', border: '1px solid var(--card-border)', borderRadius: '4px', fontSize: '0.8rem', padding: '2px 5px' }}
+          style={{ background: 'rgba(255,255,255,0.7)', color: isChanged ? 'var(--accent-color)' : 'var(--text-primary)', border: '1px solid #d8c5a8', borderRadius: '4px', fontSize: '0.75rem', padding: '1px 4px', outline: 'none' }}
         >
           {agencies.map((a: string) => <option key={a} value={a}>{a}</option>)}
           {!agencies.includes(pendingAgency) && <option value={pendingAgency}>{pendingAgency}</option>}
-          <option value="NEW_PROMPT">＋新しい箱へ移動...</option>
+          <option value="NEW_PROMPT" style={{ color: 'var(--accent-color)' }}>＋移動...</option>
         </select>
         
         {isChanged && (
@@ -339,12 +339,12 @@ function StreamerRowItem({ s, agencies, isSelected, onSelect, onUpdate }: any) {
 
 function TabBtn({ children, active, onClick }: any) {
   return (
-    <button onClick={onClick} style={{ padding: '4px 10px', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 'bold', background: active ? 'rgba(255,255,255,0.1)' : 'transparent', color: active ? 'white' : 'var(--text-secondary)' }}>
+    <button onClick={onClick} style={{ padding: '4px 10px', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 'bold', background: active ? 'white' : 'transparent', color: active ? 'var(--accent-color)' : 'var(--text-secondary)', boxShadow: active ? '0 2px 5px rgba(0,0,0,0.05)' : 'none' }}>
       {children}
     </button>
   );
 }
 
-const labelStyle = { display: 'block', marginBottom: '6px', fontSize: '0.75rem', color: 'var(--text-secondary)' };
-const inputStyle = { width: '100%', padding: '10px', fontSize: '0.9rem', borderRadius: '8px', border: '1px solid var(--card-border)', background: 'rgba(0,0,0,0.3)', color: 'white' };
-const btnStyle = { borderRadius: '8px', background: 'var(--accent-color)', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 'bold' };
+const labelStyle = { display: 'block', marginBottom: '6px', fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 'bold' as const };
+const inputStyle = { width: '100%', padding: '10px', fontSize: '0.9rem', borderRadius: '8px', border: '1px solid var(--card-border)', background: 'rgba(255,255,255,0.7)', color: 'var(--text-primary)' };
+const btnStyle = { borderRadius: '8px', background: 'var(--accent-color)', color: '#EBDCB2', border: 'none', cursor: 'pointer', fontWeight: 'bold' as const };

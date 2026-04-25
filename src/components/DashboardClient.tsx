@@ -170,7 +170,7 @@ export default function DashboardClient({ initialStreamers, initialHistory }: { 
       
       {/* Left Column: Live Status */}
       <section className="glass-panel">
-        <h2 className="panel-title">📡 ライブ状況</h2>
+        <h2 className="panel-title">ライブ状況</h2>
         <div className="streamer-list" style={{ gap: '20px', display: 'flex', flexDirection: 'column' }}>
           
           {/* --- GLOBAL LIVE SECTION --- */}
@@ -256,7 +256,7 @@ export default function DashboardClient({ initialStreamers, initialHistory }: { 
       {/* Right Column: Stream History */}
       <section className="glass-panel">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 className="panel-title" style={{ marginBottom: 0 }}>📺 配信履歴</h2>
+          <h2 className="panel-title" style={{ marginBottom: 0 }}>配信履歴</h2>
         </div>
         
         <div style={{ overflowX: 'auto' }}>
