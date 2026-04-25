@@ -1,6 +1,13 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
-import { subscribeYouTube, subscribeTwitch, resolveTwitchUserId, getCallbackBaseUrl } from '@/lib/webhooks';
+import { 
+  subscribeYouTube, 
+  subscribeTwitch, 
+  resolveTwitchUserId, 
+  getCallbackBaseUrl,
+  checkTwitchLiveStatus,
+  checkYouTubeLiveStatus
+} from '@/lib/webhooks';
 
 // @ユーザー名からYouTube ID (UC...) を抽出するユーティリティ関数
 async function resolveYouTubeChannelId(handle: string) {
@@ -56,10 +63,29 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // 2. 本番環境でのみWebhookを自動登録
+    // 2. Webhook購読と初期状態の確認
     const host = req.headers.get('host') || '';
     const isProduction = !host.includes('localhost');
+    let isLiveNow = false;
 
+    // 現在のライブ状況を即座に確認
+    try {
+      if (platform === 'youtube') {
+        isLiveNow = await checkYouTubeLiveStatus(channelId);
+      } else if (platform === 'twitch') {
+        isLiveNow = await checkTwitchLiveStatus(channelId);
+      }
+
+      // ライブ中ならデータベースの状態を即座に更新
+      if (isLiveNow) {
+        await supabaseAdmin.from('streamers').update({ is_live: true }).eq('id', streamer.id);
+        streamer.is_live = true;
+      }
+    } catch (e) {
+      console.error('Initial status check failed:', e);
+    }
+
+    // Webhook登録（本番環境のみ）
     if (isProduction) {
       const baseUrl = getCallbackBaseUrl(host);
       const secret = process.env.TWITCH_WEBHOOK_SECRET || 'default-secret-change-me';

@@ -183,6 +183,44 @@ export async function subscribeTwitch(
 }
 
 /**
+ * Twitchの現在のライブ状況を確認する
+ */
+export async function checkTwitchLiveStatus(broadcasterId: string): Promise<boolean> {
+  const clientId = process.env.TWITCH_CLIENT_ID;
+  const token = await getTwitchAppToken();
+  if (!token || !clientId) return false;
+
+  const res = await fetch(`https://api.twitch.tv/helix/streams?user_id=${broadcasterId}`, {
+    headers: {
+      'Client-ID': clientId,
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) return false;
+  const data = await res.json();
+  return (data.data?.length || 0) > 0;
+}
+
+/**
+ * YouTubeの現在のライブ状況を簡易確認する
+ * (APIキーなしでの簡易的な方法。RSSフィードから配信中か判断)
+ */
+export async function checkYouTubeLiveStatus(channelId: string): Promise<boolean> {
+  try {
+    const res = await fetch(`https://www.youtube.com/xml/feeds/videos.xml?channel_id=${channelId}`, { cache: 'no-store' });
+    if (!res.ok) return false;
+    const xml = await res.text();
+    
+    // RSSに最近の動画が含まれており、かつタイトル等にライブ特有のキーワードがあるか
+    // ※完全ではありませんが、簡易的な即時反映として使用
+    return xml.includes('yt:live'); 
+  } catch {
+    return false;
+  }
+}
+
+/**
  * ホスト文字列から適切なbase URLを生成する
  */
 export function getCallbackBaseUrl(host: string): string {
