@@ -183,7 +183,7 @@ export default function DashboardClient({ initialStreamers, initialHistory }: { 
                 現在ライブ中の配信者はいません
               </p>
             ) : (
-              liveStreamersGrouped.map(({ agency, list }) => (
+              liveStreamersGrouped.map(({ agency, list }: any) => (
                 <div 
                   key={agency} 
                   className={`agency-sub-group ${draggingAgency === agency ? 'dragging-item' : ''}`} 
@@ -202,7 +202,7 @@ export default function DashboardClient({ initialStreamers, initialHistory }: { 
                     <h3 className="agency-title">{agency}</h3>
                   </div>
                   <div className="agency-streamers-wrapper" style={{ marginLeft: '35px' }}>
-                    {list.map(s => <StreamerCard key={s.id} s={s} isFilter={filterStreamerId === s.id} onClick={() => handleStreamerClick(s.id)} />)}
+                    {list.map((s: any) => <StreamerCard key={s.id} s={s} isFilter={filterStreamerId === s.id} onClick={() => handleStreamerClick(s.id)} />)}
                   </div>
                 </div>
               ))
@@ -214,7 +214,7 @@ export default function DashboardClient({ initialStreamers, initialHistory }: { 
             <div className="container-label">
               <span className="status-dot offline-dot"></span>Offline
             </div>
-            {offlineStreamersGrouped.map(({ agency, list }) => {
+            {offlineStreamersGrouped.map(({ agency, list }: any) => {
               const isCollapsed = collapsedAgencies.includes(agency);
               const isDragging = draggingAgency === agency;
               const isAgencyFiltered = filterAgency === agency;
@@ -243,7 +243,7 @@ export default function DashboardClient({ initialStreamers, initialHistory }: { 
                   </div>
                   {!isCollapsed && (
                     <div className="agency-streamers-wrapper" style={{ marginTop: '5px', marginLeft: '35px' }}>
-                      {list.map(s => <StreamerCard key={s.id} s={s} isFilter={filterStreamerId === s.id} onClick={() => handleStreamerClick(s.id)} />)}
+                      {list.map((s: any) => <StreamerCard key={s.id} s={s} isFilter={filterStreamerId === s.id} onClick={() => handleStreamerClick(s.id)} />)}
                     </div>
                   )}
                 </div>
@@ -287,7 +287,7 @@ export default function DashboardClient({ initialStreamers, initialHistory }: { 
                 </tr>
               ) : null}
 
-              {filteredHistory.map((record) => {
+              {filteredHistory.map((record: any) => {
                 // 終了時刻の計算（ended_at がない場合のフォールバック）
                 let endTimeDisplay = '-';
                 if (record.ended_at) {

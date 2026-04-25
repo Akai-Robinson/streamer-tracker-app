@@ -110,7 +110,7 @@ export default function AdminPage() {
   };
 
   const renderList = (list: any[]) => {
-    return list.map(s => (
+    return list.map((s: any) => (
       <StreamerRowItem 
         key={s.id} 
         s={s} 
@@ -181,7 +181,7 @@ export default function AdminPage() {
                 onClick={() => {
                   const blob = new Blob([
                     "名前,所属箱,プラットフォーム,ID\n" + 
-                    streamers.map(s => `${s.name},${s.agency},${s.platform},${s.channel_id}`).join('\n')
+                    streamers.map((s: any) => `${s.name},${s.agency},${s.platform},${s.channel_id}`).join('\n')
                   ], { type: 'text/csv;charset=utf-8;' });
                   const url = URL.createObjectURL(blob);
                   const link = document.createElement("a");
@@ -209,7 +209,7 @@ export default function AdminPage() {
                     setLoading(true);
                     let count = 0;
                     for (const line of lines) {
-                      const [name, agency, platform, channelId] = line.split(',').map(s => s.trim());
+                      const [name, agency, platform, channelId] = line.split(',').map((s: any) => s.trim());
                       if (!name || !platform || !channelId) continue;
                       
                       await fetch('/api/streamers', {
@@ -265,7 +265,7 @@ export default function AdminPage() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {viewMode === 'agency' ? (
-              Object.entries(streamers.reduce((acc, s) => {
+              Object.entries(streamers.reduce((acc: any, s: any) => {
                 const a = s.agency || '個人勢';
                 if (!acc[a]) acc[a] = [];
                 acc[a].push(s);
