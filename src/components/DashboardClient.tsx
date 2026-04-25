@@ -165,8 +165,23 @@ export default function DashboardClient({ initialStreamers, initialHistory }: { 
     return <span style={{ color: 'var(--accent-hover)', marginLeft: '5px', fontSize: '0.7rem' }}>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>;
   };
 
+  // エラーが発生している配信者がいるか確認
+  const hasSyncError = initialStreamers.some(s => s.last_sync_status === 'error');
+
   return (
-    <div className="dashboard-grid">
+    <div className="dashboard-container">
+      <header className="header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <h1 className="title">Streamer Tracker</h1>
+          {hasSyncError && (
+            <div className="error-badge" title="一部の配信者で同期エラーが発生しています（API制限などの可能性があります）">
+              <span className="error-dot"></span>
+              SYSTEM ERROR
+            </div>
+          )}
+        </div>
+      </header>
+      <div className="dashboard-grid">
       
       {/* Left Column: Live Status */}
       <section className="glass-panel">
@@ -320,6 +335,7 @@ export default function DashboardClient({ initialStreamers, initialHistory }: { 
         </div>
       </section>
 
+      </div>
     </div>
   );
 }
