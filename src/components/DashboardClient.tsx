@@ -304,7 +304,7 @@ export default function DashboardClient({ initialStreamers, initialHistory }: { 
 
               {filteredHistory.map((record: any) => {
                 const isLive = !record.ended_at;
-                let endTimeDisplay = '-';
+                let endTimeDisplay: React.ReactNode = '-';
                 if (!isLive) {
                   endTimeDisplay = formatTime(record.ended_at);
                 } else {
