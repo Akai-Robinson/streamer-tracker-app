@@ -64,6 +64,7 @@ export async function POST(req: Request) {
                 streamer_id: streamer.id,
                 title: 'YouTube Stream / Upload', // 本格実装ならAPIから取得
                 archive_url: `https://youtube.com/watch?v=${videoId}`,
+                agency: streamer.agency, // その瞬間の所属を記録！
                 started_at: new Date().toISOString()
             });
             // 配信中フラグを建てる (YouTubeの特性上終了は自動で検知しにくいため簡易実装)

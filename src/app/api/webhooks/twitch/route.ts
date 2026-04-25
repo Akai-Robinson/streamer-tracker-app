@@ -50,8 +50,9 @@ export async function POST(req: Request) {
           .from('stream_history')
           .insert({
             streamer_id: streamer.id,
-            title: 'Twitch Live Stream', // TODO: APIで詳細取得可能
-            archive_url: `https://www.twitch.tv/${streamer.name}`, // 一時的にチャンネルURL
+            title: 'Twitch Live Stream', 
+            archive_url: `https://www.twitch.tv/${streamer.name}`,
+            agency: streamer.agency, // その瞬間の所属を記録！
             started_at: new Date().toISOString(),
             download_status: 'pending',
             transcribe_status: 'pending'
