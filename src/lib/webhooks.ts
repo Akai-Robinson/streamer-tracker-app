@@ -204,11 +204,10 @@ export async function checkTwitchLiveStatus(broadcasterId: string): Promise<bool
 
 /**
  * YouTubeの現在のライブ状況を確実に確認する
- * チャンネルの /live ページをフェッチして、ライブ中のシグナルを探す
+ * チャンネルの /live ページをフェッチして、ライブ中のシグナルを厳密に探す
  */
 export async function checkYouTubeLiveStatus(channelId: string): Promise<boolean> {
   try {
-    // チャンネルのライブページを直接取得
     const url = `https://www.youtube.com/channel/${channelId}/live`;
     const res = await fetch(url, { 
       cache: 'no-store',
@@ -220,9 +219,15 @@ export async function checkYouTubeLiveStatus(channelId: string): Promise<boolean
     if (!res.ok) return false;
     const html = await res.text();
     
-    // HTMLの中に「"isLive":true」というキーワードが含まれているかチェック
-    // YouTubeの内部データ構造（ytInitialPlayerResponse）に含まれる文字列を探します
-    return html.includes('"isLive":true') || html.includes('\"style\":\"LIVE\"');
+    // 1. まず "isLive":true が含まれているか（大前提）
+    // 2. 待機所（Upcoming）ではないことを確認するため "LIVE" というスタイルが指定されているかチェック
+    // 3. かつ、JSONデータ内の特定のフラグを確認
+    const hasLiveFlag = html.includes('"isLive":true');
+    const isActuallyLive = html.includes('"style":"LIVE"') || html.includes('\"status\":\"LIVE\"');
+    const isUpcoming = html.includes('"style":"UPCOMING"') || html.includes('\"status\":\"UPCOMING\"');
+
+    // 「ライブ中フラグがあり」かつ「待機所ではない」場合のみライブと判定
+    return (hasLiveFlag && isActuallyLive) && !isUpcoming;
   } catch (e) {
     console.error('[YouTube Status Check Error]', e);
     return false;
