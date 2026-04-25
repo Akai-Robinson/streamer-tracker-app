@@ -1,6 +1,12 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
-import { subscribeYouTube, subscribeTwitch, getCallbackBaseUrl } from '@/lib/webhooks';
+import { 
+  subscribeYouTube, 
+  subscribeTwitch, 
+  getCallbackBaseUrl,
+  checkTwitchLiveStatus,
+  checkYouTubeLiveStatus
+} from '@/lib/webhooks';
 
 // Basic認証チェック
 function checkAuth(req: Request): boolean {
@@ -32,12 +38,35 @@ export async function POST(req: Request) {
   const results: { name: string; platform: string; success: boolean; error?: string }[] = [];
 
   for (const streamer of streamers || []) {
-    if (streamer.platform === 'youtube') {
-      const result = await subscribeYouTube(streamer.channel_id, baseUrl);
-      results.push({ name: streamer.name, platform: 'youtube', ...result });
-    } else if (streamer.platform === 'twitch') {
-      const result = await subscribeTwitch(streamer.channel_id, baseUrl, secret);
-      results.push({ name: streamer.name, platform: 'twitch', ...result });
+    try {
+      let isLiveNow = false;
+      let subscribeSuccess = false;
+
+      if (streamer.platform === 'youtube') {
+        const result = await subscribeYouTube(streamer.channel_id, baseUrl);
+        subscribeSuccess = result.success;
+        isLiveNow = await checkYouTubeLiveStatus(streamer.channel_id);
+      } else if (streamer.platform === 'twitch') {
+        const result = await subscribeTwitch(streamer.channel_id, baseUrl, secret);
+        subscribeSuccess = result.success;
+        isLiveNow = await checkTwitchLiveStatus(streamer.channel_id);
+      }
+
+      // データベースの状態を最新のライブ状況に同期
+      await supabaseAdmin.from('streamers').update({ is_live: isLiveNow }).eq('id', streamer.id);
+
+      results.push({ 
+        name: streamer.name, 
+        platform: streamer.platform, 
+        success: subscribeSuccess 
+      });
+    } catch (e: any) {
+      results.push({ 
+        name: streamer.name, 
+        platform: streamer.platform, 
+        success: false, 
+        error: e.message 
+      });
     }
   }
 
@@ -45,7 +74,7 @@ export async function POST(req: Request) {
   const failCount = results.filter(r => !r.success).length;
 
   return NextResponse.json({
-    message: `${successCount}件成功 / ${failCount}件失敗`,
+    message: `${successCount}件成功 / ${failCount}件失敗 (ライブ状況も同期しました)`,
     results,
   });
 }
