@@ -373,7 +373,17 @@ function StreamerRowItem({ s, agencies, isSelected, onSelect, onUpdate }: any) {
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <span style={{ fontWeight: '600', fontSize: '0.9rem', color: 'var(--text-primary)' }}>{s.name}</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontFamily: 'monospace', opacity: 0.7 }}>{s.channel_id}</span>
+            <a
+              href={s.platform === 'youtube'
+                ? `https://www.youtube.com/channel/${s.channel_id}`
+                : `https://www.twitch.tv/${s.channel_id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontFamily: 'monospace', opacity: 0.8, textDecoration: 'none' }}
+              title="チャンネルページを確認"
+            >
+              {s.channel_id} ↗
+            </a>
             {s.last_sync_status === 'error' && (
               <span style={{ color: '#AF4425', fontSize: '0.65rem', fontWeight: 'bold', background: 'rgba(175, 68, 37, 0.08)', padding: '1px 6px', borderRadius: '4px', border: '1px solid rgba(175, 68, 37, 0.1)' }} title={s.last_sync_error}>
                 ⚠️ {s.last_sync_error || 'Sync Error'}
